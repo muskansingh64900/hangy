@@ -1,17 +1,13 @@
-name: Backend CI/CD
+name: HangPoint CI/CD
 
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'backend/**'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'backend/**'
 
 jobs:
-  build-and-test:
+  build-backend:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,3 +26,23 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
         working-directory: ./backend/HangPoint.API
+
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+
+      - name: Get packages
+        run: flutter pub get
+        working-directory: ./frontend/hangpoint_app
+
+      - name: Build Flutter Web
+        run: flutter build web --release
+        working-directory: ./frontend/hangpoint_app
