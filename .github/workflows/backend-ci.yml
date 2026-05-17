@@ -1,4 +1,4 @@
-name: Backend CI/nCD
+name: Backend CI/CD
 
 on:
   push:
@@ -25,12 +25,12 @@ jobs:
 
       - name: Restore packages
         run: dotnet restore
-        working-directory: ./backend
+        working-directory: ./backend/HangPoint.API
 
       - name: Build
         run: dotnet build --no-restore
-        working-directory: ./backend
+        working-directory: ./backend/HangPoint.API
 
       - name: Run Tests
         run: dotnet test --no-build --verbosity normal
-        working-directory: ./backend
+        working-directory: ./backend/HangPoint.Tests
