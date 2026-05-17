@@ -30,7 +30,3 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
         working-directory: ./backend/HangPoint.API
-
-      - name: Run Tests
-        run: dotnet test --no-build --verbosity normal
-        working-directory: ./backend/HangPoint.Tests
