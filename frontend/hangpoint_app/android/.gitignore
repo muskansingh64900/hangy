@@ -12,3 +12,9 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+
+
+# secrets
+backend/HangPoint.API/appsettings.json
+backend/HangPoint.API/appsettings.Development.json
