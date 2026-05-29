@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+
+  # PostgreSQL Database
+  db:
+    image: postgres:16
+    container_name: hangpoint_db
+    restart: always
+    environment:
+      POSTGRES_DB: hangpoint
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d hangpoint"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # .NET Backend
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: hangpoint_backend
+    restart: always
+    ports:
+      - "5166:5166"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=hangpoint;Username=${DB_USER};Password=${DB_PASSWORD}
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - GoogleMaps__ApiKey=${GOOGLE_MAPS_API_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Flutter Web Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    container_name: hangpoint_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
